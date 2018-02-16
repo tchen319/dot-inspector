@@ -1,0 +1,103 @@
+body {
+    margin: 0;
+    padding: 0;
+    board: 0;
+    min-width: 360px;
+    white-space: nowrap;
+    font-size: unset;
+}
+
+#container {
+    display: block;
+}
+
+#caption {
+    margin: 10px;
+}
+
+#caption > div {
+    float: left;
+    font-size: 125%;
+    font-weight: 700;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#content, #no-content {
+    display: none;
+    padding-bottom: 10px;
+    margin: 10px;
+    width: 100%;
+}
+
+#no-content {
+    padding-top: 10px;
+}
+
+div.divider {
+    display: block;
+    margin-top: 10px;
+    border-top: 1px solid #461aa0;
+    width: 100%;
+}
+
+label {
+    font-weight: 600;
+    margin-right: 5px;
+}
+
+div.pixel-caption {
+}
+
+div.pixel-list {
+    font-size: 90%;
+    margin: 10px 0;
+}
+
+div[data-template] {
+    display: none;
+}
+
+div.pixel-cell {
+    float: left;
+    padding-right: 5px;
+    min-width: 15px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+div.pixel-cell:hover {
+    cursor: pointer;
+}
+
+div.pixel-detail {
+    clear: both;
+    padding-top: 5px;
+    padding-bottom: 15px;
+    padding-left: 15px;
+}
+
+div.pixel-detail-toggle {
+    clear: both;
+}
+
+div.pixel-cell:last-child {
+    clear: right;
+    padding-left: 5px;
+    padding-bottom: 5px;
+}
+
+div.pixel-detail-caption {
+    color: gray;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.toggle-icon {
+    color: darkgray;
+    font-weight: 300;
+}
+
+.status-icon {
+    font-weight: 300;
+}
