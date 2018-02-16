@@ -1,19 +1,21 @@
 {
-  // https://developer.chrome.com/apps/manifest
   "manifest_version": 2,
-  "name": "Yahoo Gemini Pixel Inspector",
-  "description": "Diagnose all Yahoo Gemini DPA Pixels",
-  "version": "1.0",
+  "name": "Yahoo Gemini DOT Pixel Inspector",
+  "description": "Help to diagnose Gemini DPA DOT Pixels",
+  "version": "0.0.1",
 
-  // https://developer.chrome.com/extensions/browserAction
   "browser_action": {
-    "default_title": "Yahoo Gemini Pixel",
+    "default_title": "Yahoo Gemini DOT Pixel Inspector",
     "default_icon": "img/dpa.png",
     "default_popup": "popup.html"
   },
 
-  // https://developer.chrome.com/extensions/contentSecurityPolicy
-  // "content_security_policy": "default-src 'none'; style-src 'self'; script-src 'self';",
+  "icons": {
+    "16": "img/yahoo16.png",
+    "48": "img/yahoo48.png",
+    "128": "img/yahoo128.png"
+  },
+
   "content_scripts": [
     {
       "matches": [ "<all_urls>" ],
