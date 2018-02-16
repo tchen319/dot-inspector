@@ -3,7 +3,6 @@ body {
     padding: 0;
     min-width: 360px;
     white-space: nowrap;
-    font-size: unset;
     display: block;
 }
 

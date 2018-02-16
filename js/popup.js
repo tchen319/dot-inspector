@@ -34,7 +34,8 @@ function loadPixels() {
                     for (let i = 0; i < pixelDetails.length; i++) {
                         pixelGroup.add(pixelDetails[i].pixel_id);
                     }
-                    for (let pixelId of pixelGroup) {
+
+                    for (const pixelId of pixelGroup) {
                         /**
                          * Display a pixel ID
                          */
@@ -51,6 +52,7 @@ function loadPixels() {
                             }
                         }
 
+                        // separate from a previous pixel group
                         const separatorDiv = document.createElement('div');
                         separatorDiv.classList.add('pixel-group-divider');
                         contentDiv.appendChild(separatorDiv);
