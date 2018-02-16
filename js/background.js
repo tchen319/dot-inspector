@@ -143,11 +143,10 @@ function updateBadge(pixelCollection) {
 
 /**
  * An utility function for clearing all pixels in a collection
- * @param requestDetails a web request detail that is passed to our listener
  */
-PixelCollection.clear = function (requestDetails) {
-    if (tabPixelCollection[requestDetails.tabId]) {
-        delete tabPixelCollection[requestDetails.tabId];
+PixelCollection.clear = function (tabId) {
+    if (tabPixelCollection[tabId]) {
+        delete tabPixelCollection[tabId];
     }
 };
 
@@ -192,8 +191,16 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
 chrome.tabs.onUpdated.addListener(function (tabId, change, tab) {
     if (change.status == "complete") {
-        // fetchPixels(tabId);
+        PixelCollection.clear(tabId);
     }
+});
+
+chrome.tabs.onReplaced.addListener(function (addedTabId, removedTabId) {
+    console.log('replaced with tab: ' + addedTabId + ', and removed tab: ' + removedTabId);
+});
+
+chrome.tabs.onRemoved.addListener(function (tabId, info) {
+    console.log('removed tab: ' + tabId);
 });
 
 chrome.tabs.onActivated.addListener(function (activeInfo) {
@@ -217,5 +224,4 @@ chrome.webRequest.onBeforeRequest.addListener(
  */
 chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
     activeTab = (tabs && tabs.length > 0) ? tabs[0] : null;
-    console.log('current tab: ' + JSON.stringify(activeTab));
 });
