@@ -8,14 +8,21 @@ body {
 
 #caption {
     margin: 10px;
+    display: table;
 }
 
 #caption > div {
-    float: left;
+    display: table-cell;
+    vertical-align: middle;
     font-size: 125%;
     font-weight: 700;
-    margin-left: 5px;
+    padding-left: 10px;
     margin-right: 5px;
+}
+
+#caption > img {
+    display: table-cell;
+    vertical-align: middle;
 }
 
 #content, #no-content {

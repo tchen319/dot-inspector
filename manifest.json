@@ -6,7 +6,7 @@
 
   "browser_action": {
     "default_title": "Yahoo Gemini DOT Pixel Inspector",
-    "default_icon": "img/dpa.png",
+    "default_icon": "img/yahoo16.png",
     "default_popup": "popup.html"
   },
 
