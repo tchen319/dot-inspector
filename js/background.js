@@ -110,6 +110,10 @@ PixelCollection.add = function (requestDetails, pixel) {
  * @param pixelCollection
  */
 function updateBadge(pixelCollection) {
+    if (!pixelCollection) {
+        return;
+    }
+
     const pixels = pixelCollection.pixels;
     let text = '';
 
@@ -121,7 +125,7 @@ function updateBadge(pixelCollection) {
         if (pixelCollection.error_count > 0) {
             color = '#f44253';
         } else if (pixelCollection.warning_count > 0) {
-            color = '#f4d442';
+            color = '#ff9900';
         }
 
         chrome.browserAction.setBadgeBackgroundColor({

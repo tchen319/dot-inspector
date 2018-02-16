@@ -29,21 +29,36 @@ function loadPixels() {
                 const contentDiv = document.getElementById('content');
 
                 if (pixelDetails) {
+                    const pixelGroup = new Set();
+
+                    for (let i = 0; i < pixelDetails.length; i++) {
+                        pixelGroup.add(pixelDetails[i].pixel_id);
+                    }
+                    for (let pixelId of pixelGroup) {
+                        /**
+                         * Display a pixel ID
+                         */
+                        const pixelLabel = pixelLabelTemplateDiv.cloneNode(false);
+                        const _pixel_id = (!pixelId ? 'Missing' : pixelId);
+
+                        pixelLabel.innerHTML = `<label>Pixel ID:</label><span>${_pixel_id}</span>`;
+                        pixelLabel.removeAttribute('data-template');
+                        contentDiv.appendChild(pixelLabel);
+
+                        for (let i = 0; i < pixelDetails.length; i++) {
+                            if (pixelDetails[i].pixel_id === pixelId) {
+                                createPixelDiv(pixelDetails[i]);
+                            }
+                        }
+
+                        const separatorDiv = document.createElement('div');
+                        separatorDiv.classList.add('pixel-group-divider');
+                        contentDiv.appendChild(separatorDiv);
+                    }
+
                     noContentDiv.style.display = 'none';
                     contentDiv.style.display = 'inherit';
 
-                    /**
-                     * Display a pixel ID
-                     */
-                    const pixelLabel = pixelLabelTemplateDiv.cloneNode(false);
-                    const _pixel_id = (!pixelDetails[0].pixel_id ? 'Missing' : pixelDetails[0].pixel_id);
-                    pixelLabel.innerHTML = `<label>Pixel ID:</label><span>${_pixel_id}</span>`;
-                    contentDiv.appendChild(pixelLabel);
-                    pixelLabel.removeAttribute('data-template');
-
-                    for (let i = 0; i < pixelDetails.length; i++) {
-                        creativePixelDiv(pixelDetails[i]);
-                    }
                 } else {
                     const baseUrl = tab.url.replace(/(http[s]?:\/\/[^\/?]*).*$/, '$1');
                     noContentDiv.innerHTML = 'No pixels found on <u>' + baseUrl + '</u>';
@@ -59,7 +74,7 @@ function loadPixels() {
  * Create a new section showing both a pixel summary info and detail info.
  * @param pixel is a 'PixelDetail' object defined in background.js
  */
-function creativePixelDiv(pixel) {
+function createPixelDiv(pixel) {
     if (!pixelListTemplateDiv) {
         console.log('missing a pixel template');
         return;
@@ -77,7 +92,7 @@ function creativePixelDiv(pixel) {
     if (pixel.event_mask & ERROR_MASK) {
         statusIcon.style.color = '#f44253';
     } else if (pixel.event_mask & WARNING_MASK) {
-        statusIcon.style.color = '#f4d442';
+        statusIcon.style.color = '#ff9900';
     } else {
         statusIcon.style.color = '#2ecc71';
     }
@@ -114,6 +129,7 @@ function creativePixelDiv(pixel) {
      */
     createDetailEntryDiv(detailDiv, 'Event Type', pixel.event_type);
     createDetailEntryDiv(detailDiv, 'Product ID', pixel.product_id);
+    createDetailEntryDiv(detailDiv, 'Gemini ID', pixel.project_id);
 
     // Insert it into DOM, and then make it visible by removing the invisible style
     contentDiv.appendChild(pixelList);
@@ -128,9 +144,12 @@ function creativePixelDiv(pixel) {
  */
 function createDetailEntryDiv(parentDiv, label, value) {
     const detailEntryDiv = document.createElement('div');
-    const _value = (value ? value : 'Missing');
 
-    detailEntryDiv.innerHTML = `<label>${label}:</label><span>${_value}</span>`;
+    if (value) {
+        detailEntryDiv.innerHTML = `<label>${label}:</label><span>${value}</span>`;
+    } else {
+        detailEntryDiv.innerHTML = `<label>${label}:</label><span style="color:#f44253">&lt;missing&gt;</span>`;
+    }
     parentDiv.appendChild(detailEntryDiv);
 }
 

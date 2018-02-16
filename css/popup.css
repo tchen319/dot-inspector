@@ -1,13 +1,9 @@
 body {
     margin: 0;
     padding: 0;
-    board: 0;
     min-width: 360px;
     white-space: nowrap;
     font-size: unset;
-}
-
-#container {
     display: block;
 }
 
@@ -25,20 +21,23 @@ body {
 
 #content, #no-content {
     display: none;
-    padding-bottom: 10px;
     margin: 10px;
     width: 100%;
 }
 
 #no-content {
-    padding-top: 10px;
+    padding: 10px 0;
 }
 
 div.divider {
-    display: block;
     margin-top: 10px;
     border-top: 1px solid #461aa0;
     width: 100%;
+}
+
+div.pixel-group-divider {
+    clear: both;
+    margin-bottom: 10px;
 }
 
 label {
@@ -73,8 +72,8 @@ div.pixel-cell:hover {
 div.pixel-detail {
     clear: both;
     padding-top: 5px;
-    padding-bottom: 15px;
-    padding-left: 15px;
+    padding-bottom: 5px;
+    padding-left: 30px;
 }
 
 div.pixel-detail-toggle {
