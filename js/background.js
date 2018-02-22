@@ -182,23 +182,28 @@ PixelCollection.clear = function (tabId, damper = 5000) {
 /**
  * Data structure - store the result of a parsed pixel URL in an object
  * @param requestDetail - https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webRequest/onBeforeRequest#details
+ * @param requestParams - a pixel's query parameters
  */
-function PixelDetail(requestDetail, params) {
+function PixelDetail(requestDetail, requestParams) {
     this.id = requestDetail.requestId;
     this.type = requestDetail.type;
     this.url = requestDetail.url;
     this.initiator = requestDetail.originUrl;
     this.load_time = -requestDetail.timeStamp; // negate the value to indicate it is incomplete
-    this.params = params;
+    this.params = {};
     this.event_mask = 0xff;
     this.now = Date.now();
 
-    if (params) {
-        this.project_id = params.get('a'); // it should always be 10000 for Yahoo Gemini
-        this.pixel_id = params.get('.yp'); // a Gemini pixel id, which is unique
-        this.event_action = params.get('ea');
-        this.event_type = params.get('et');
-        this.product_id = params.get('product_id');
+    if (requestParams) {
+        this.project_id = requestParams.get('a'); // it should always be 10000 for Yahoo Gemini
+        this.pixel_id = requestParams.get('.yp'); // a Gemini pixel id, which is unique
+        this.event_action = requestParams.get('ea');
+        this.event_type = requestParams.get('et');
+        this.product_id = requestParams.get('product_id');
+
+        for (const p of requestParams) {
+            this.params[p[0]] = p[1];
+        }
     }
 
     this.isError = function () {
