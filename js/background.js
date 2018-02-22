@@ -19,11 +19,13 @@ let activeTab;
 
 /**
  * Parse a raw pixel URL that is intercepted during HTTP Request. For a javascript based pixel, additional parameters are inspected
+ * @param requestDetail - https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webRequest/onBeforeRequest#details
+ * @return PixelDetail
  */
-function parsePixel(details) {
-    const pixel = parseMinimumPixel(details.url);
+function parsePixel(requestDetail) {
+    const pixel = parseMinimumPixel(requestDetail);
 
-    if (details.type === 'script') {
+    if (requestDetail.type === 'script') {
         // parse Yahoo Gemini javascript dot pixel url
         if (pixel.product_id) {
             pixel.event_mask &= ~PARAM_PRODUCT_ID;
@@ -41,12 +43,14 @@ function parsePixel(details) {
 
 /**
  * Parse either a javascript url or an image url, and verify two basic required parameters (project id and pixel id)
- * @param url a Yahoo Gemini Pixel request URL, which could be from either a javascript or an image request
+ * @param requestDetail - https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webRequest/onBeforeRequest#details
+ * @return PixelDetail
  */
-function parseMinimumPixel(url) {
+function parseMinimumPixel(requestDetail) {
+    const url = requestDetail.url;
     const param_start = url.indexOf('?');
     const params = (param_start > 0 ? new URLSearchParams(url.substring(param_start + 1)) : null);
-    const pixel = new PixelDetail(url, params, 0xff);
+    const pixel = new PixelDetail(requestDetail, params);
 
     if (pixel.project_id && !isNaN(pixel.project_id)) {
         pixel.event_mask &= ~PARAM_PROJECT_ID;
@@ -142,22 +146,52 @@ function updateBadge(pixelCollection) {
 }
 
 /**
- * An utility function for clearing all pixels in a collection
+ * An utility function for clearing all pixels in a collection. Since a tab's onUpdated event may be fired after
+ * some or all of it pixel requests are sent out first, we don't want to clear the pixels we just collected. So
+ * we put a damper to avoid such race condition
  */
-PixelCollection.clear = function (tabId) {
-    if (tabPixelCollection[tabId]) {
-        delete tabPixelCollection[tabId];
+PixelCollection.clear = function (tabId, damper = 5000) {
+    const memberPixels = tabPixelCollection[tabId];
+    if (memberPixels) {
+        const pixels = memberPixels.pixels;
+        let changed = false;
+
+        if (pixels) {
+            let i = 0;
+            while (i < pixels.length) {
+                if (pixels[i].now + damper <= Date.now()) {
+                    pixels.splice(i, 1);
+                    changed = true;
+                } else {
+                    i++;
+                }
+            }
+        }
+
+        if (changed) {
+            updateBadge(memberPixels);
+        }
+
+        // clean up a pixel collection only if it is blank
+        if (!pixels || !pixels.length) {
+            delete tabPixelCollection[tabId];
+        }
     }
 };
 
 /**
  * Data structure - store the result of a parsed pixel URL in an object
+ * @param requestDetail - https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/webRequest/onBeforeRequest#details
  */
-function PixelDetail(url, params, mask) {
-    this.type = 'script';
-    this.url = url;
+function PixelDetail(requestDetail, params) {
+    this.id = requestDetail.requestId;
+    this.type = requestDetail.type;
+    this.url = requestDetail.url;
+    this.initiator = requestDetail.originUrl;
+    this.load_time = -requestDetail.timeStamp; // negate the value to indicate it is incomplete
     this.params = params;
-    this.event_mask = mask;
+    this.event_mask = 0xff;
+    this.now = Date.now();
 
     if (params) {
         this.project_id = params.get('a'); // it should always be 10000 for Yahoo Gemini
@@ -207,6 +241,9 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
     updateBadge(tabPixelCollection[activeInfo.tabId]);
 });
 
+/**
+ * Listen for <script> and <img> loading. The scope of url is defined in manifect.json
+ */
 chrome.webRequest.onBeforeRequest.addListener(
     function (details) {
         PixelCollection.add(details, parsePixel(details));
@@ -214,7 +251,31 @@ chrome.webRequest.onBeforeRequest.addListener(
         return {cancel: false};
     },
     {
-        urls: ["<all_urls>"],
+        urls: ["*://sp.analytics.yahoo.com/*"],
+        types: ["script", "image"]
+    }
+);
+
+/**
+ * Listen for <script> and <img> loading. The scope of url is defined in manifect.json
+ */
+chrome.webRequest.onCompleted.addListener(
+    function (details) {
+        const memberPixels = tabPixelCollection[details.tabId];
+        if (memberPixels && memberPixels.pixels) {
+            for (const p of memberPixels.pixels) {
+                if (p.id === details.requestId) {
+                    p.load_time = Date.now() + p.load_time;
+                    p.load_time = Number.parseFloat(p.load_time).toFixed(2);
+                    break;
+                }
+            }
+        }
+
+        return {cancel: false};
+    },
+    {
+        urls: ["*://sp.analytics.yahoo.com/*"],
         types: ["script", "image"]
     }
 );
