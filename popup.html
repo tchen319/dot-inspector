@@ -45,5 +45,30 @@
         </div>
     </div>
 </div>
+
+<!-- Value of a pixel entry -->
+<template id="pe-template">
+    <div class="pixel-entry">
+        <label>name</label>
+        <div class="pe-value">${value}</div>
+    </div>
+</template>
+
+<!-- Value of a pixel entry that can be shown and hide -->
+<template id="pe-template-show">
+    <div class="pixel-entry">
+        <label>name</label>
+        <div class="pe-value pe-show">Show</div>
+    </div>
+    <div class="pe-longtext">${value}</div>
+</template>
+
+<!-- Mandatory value of a pixel entry is missing -->
+<template id="pe-template-missing">
+    <div class="pixel-entry">
+        <label>name</label>
+        <div class="pe-value pe-missing">&lt;missing&gt;</div>
+    </div>
+</template>
 </body>
 </html>

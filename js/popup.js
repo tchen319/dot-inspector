@@ -139,19 +139,62 @@ function createPixelDiv(pixel) {
 }
 
 /**
+ * Convert HTML entities to characters, and then insert <wbr> tag to break down a long line
+ */
+function urlBeautify(url) {
+    let i = url.indexOf('?') + 1;
+    let t = decodeURIComponent(url.substring(i)).replace(/\s/g, '+').replace(/&/g, '<wbr>&');
+
+    return url.substring(0, i) + decodeURIComponent(t);
+}
+
+/**
  * Create a single cell of pixel summary info
  * @param parentDiv - where a new cell is appended
  * @param label
  * @param value The actual value shown next to the label
+ * @param delimiter separates a label from its value
+ * @param isShowHide indicates whether the display of the value can be shown and hidden
+ * @param isOptional indicates whether the value is optional
  */
-function createDetailEntryDiv(parentDiv, label, value) {
-    const detailEntryDiv = document.createElement('div');
+function createDetailEntryDiv(parentDiv, label, value, isOptional = false, isShowHide = false) {
+    let entryHTMLTemplateId = '#pe-template';
+
+    if (!value) {
+        entryHTMLTemplateId = '#pe-template-missing';
+    } else if (isShowHide) {
+        entryHTMLTemplateId = '#pe-template-show';
+    }
+
+    const content = document.querySelector(entryHTMLTemplateId).content;
+    content.querySelector("label").textContent = `${label}:`;
 
     if (value) {
-        detailEntryDiv.innerHTML = `<label>${label}:</label><span>${value}</span>`;
-    } else {
-        detailEntryDiv.innerHTML = `<label>${label}:</label><span style="color:#f44253">&lt;missing&gt;</span>`;
+        const valueDiv = content.querySelector(".pe-value");
+
+        if (isShowHide) {
+            valueDiv.textContent = 'Show';
+            const longValueDiv = content.querySelector(".pe-longtext");
+            longValueDiv.hidden = true;
+            longValueDiv.innerHTML = value;
+        } else {
+            valueDiv.textContent = value;
+        }
     }
+
+    const detailEntryDiv = document.importNode(content, true);
+    if (value && isShowHide) {
+        const valueDiv = detailEntryDiv.querySelector(".pe-value");
+        const longValueDiv = detailEntryDiv.querySelector(".pe-longtext");
+
+        valueDiv.addEventListener('click', () => {
+            longValueDiv.hidden = !longValueDiv.hidden;
+            valueDiv.textContent = (longValueDiv.hidden ? 'Show' : 'Hide');
+        }, {
+            useCapture: true
+        });
+    }
+
     parentDiv.appendChild(detailEntryDiv);
 }
 

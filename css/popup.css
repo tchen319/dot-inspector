@@ -2,6 +2,7 @@ body {
     margin: 0;
     padding: 0;
     min-width: 360px;
+    width: 460px;
     white-space: nowrap;
     display: block;
 }
@@ -28,7 +29,7 @@ body {
 #content, #no-content {
     display: none;
     margin: 10px;
-    width: 100%;
+    /* width: 100%; */
 }
 
 #no-content {
@@ -46,8 +47,9 @@ div.pixel-group-divider {
     margin-bottom: 10px;
 }
 
-label {
+label, .pe-show {
     font-weight: 600;
+    font-size: 12px;
     margin-right: 5px;
 }
 
@@ -71,8 +73,14 @@ div.pixel-cell {
     vertical-align: middle;
 }
 
-div.pixel-cell:hover {
+div.pixel-cell:hover, div.pe-show {
     cursor: pointer;
+}
+
+div.pixel-cell:last-child {
+    clear: right;
+    padding-left: 5px;
+    padding-bottom: 5px;
 }
 
 div.pixel-detail {
@@ -86,16 +94,30 @@ div.pixel-detail-toggle {
     clear: both;
 }
 
-div.pixel-cell:last-child {
-    clear: right;
-    padding-left: 5px;
-    padding-bottom: 5px;
-}
-
 div.pixel-detail-caption {
     color: gray;
     font-weight: 500;
     margin-bottom: 5px;
+}
+
+.pixel-entry {
+    display: flex;
+}
+
+.pe-show {
+    font-color: gray;
+    text-decoration: underline dotted gray;
+}
+
+.pe-missing {
+    color: #f44253;
+}
+
+.pe-longtext {
+    padding: 3px;
+    border: 1px solid lightgray;
+    margin: 5px 10px 5px -15px;
+    overflow-wrap: break-word;
 }
 
 .toggle-icon {
