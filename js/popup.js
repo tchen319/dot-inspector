@@ -10,6 +10,8 @@ const PARAM_EVENT_ACTION = 0x8;
 const PARAM_EVENT_TYPE = 0x10;
 const ERROR_MASK = PARAM_PROJECT_ID | PARAM_PIXEL_ID;
 const WARNING_MASK = PARAM_PRODUCT_ID | PARAM_EVENT_ACTION | PARAM_EVENT_TYPE;
+const PIXEL_KEYS = ['a', '.yp', 'et', 'ec', 'ea', 'el', 'ev', 'gv'];
+const PIXEL_INFO = ['project ID', 'pixel ID', 'event type', 'event category', 'event action', 'event label', 'event value', 'gemini value'];
 
 let pixelListTemplateDiv;
 let pixelLabelTemplateDiv;
@@ -129,9 +131,16 @@ function createPixelDiv(pixel) {
     /**
      * Add an event details
      */
-    createDetailEntryDiv(detailDiv, 'Event Type', pixel.event_type);
-    createDetailEntryDiv(detailDiv, 'Product ID', pixel.product_id);
-    createDetailEntryDiv(detailDiv, 'Gemini ID', pixel.project_id);
+    createDetailEntryDiv(detailDiv, [`URL (${pixel.type})`], urlBeautify(pixel.url), false, true);
+    createDetailEntryDiv(detailDiv, ['Load time'], pixel.load_time);
+
+    for (let i = 0; i < PIXEL_KEYS.length; i++) {
+        const key = PIXEL_KEYS[i];
+        const info = PIXEL_INFO[i];
+        let value = pixel.params[key];
+
+        createDetailEntryDiv(detailDiv, [key, info], value);
+    }
 
     // Insert it into DOM, and then make it visible by removing the invisible style
     contentDiv.appendChild(pixelList);
@@ -143,7 +152,7 @@ function createPixelDiv(pixel) {
  */
 function urlBeautify(url) {
     let i = url.indexOf('?') + 1;
-    let t = decodeURIComponent(url.substring(i)).replace(/\s/g, '+').replace(/&/g, '<wbr>&');
+    let t = decodeURIComponent(url.substring(i)).replace(/([&,\/?])/g, '<wbr>$1');
 
     return url.substring(0, i) + decodeURIComponent(t);
 }
@@ -151,13 +160,13 @@ function urlBeautify(url) {
 /**
  * Create a single cell of pixel summary info
  * @param parentDiv - where a new cell is appended
- * @param label
+ * @param labels
  * @param value The actual value shown next to the label
  * @param delimiter separates a label from its value
  * @param isShowHide indicates whether the display of the value can be shown and hidden
  * @param isOptional indicates whether the value is optional
  */
-function createDetailEntryDiv(parentDiv, label, value, isOptional = false, isShowHide = false) {
+function createDetailEntryDiv(parentDiv, labels, value, isOptional = false, isShowHide = false) {
     let entryHTMLTemplateId = '#pe-template';
 
     if (!value) {
@@ -167,7 +176,7 @@ function createDetailEntryDiv(parentDiv, label, value, isOptional = false, isSho
     }
 
     const content = document.querySelector(entryHTMLTemplateId).content;
-    content.querySelector("label").textContent = `${label}:`;
+    content.querySelector("label").textContent = `${labels[0]}:`;
 
     if (value) {
         const valueDiv = content.querySelector(".pe-value");
@@ -183,8 +192,13 @@ function createDetailEntryDiv(parentDiv, label, value, isOptional = false, isSho
     }
 
     const detailEntryDiv = document.importNode(content, true);
+    const valueDiv = detailEntryDiv.querySelector(".pe-value");
+
+    if (labels.length == 2) {
+        valueDiv.textContent += ` (${labels[1]})`;
+        console.log('new label: ' + valueDiv.textContent);
+    }
     if (value && isShowHide) {
-        const valueDiv = detailEntryDiv.querySelector(".pe-value");
         const longValueDiv = detailEntryDiv.querySelector(".pe-longtext");
 
         valueDiv.addEventListener('click', () => {

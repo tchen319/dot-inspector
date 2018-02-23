@@ -5,6 +5,7 @@ body {
     width: 460px;
     white-space: nowrap;
     display: block;
+    font-size: unset;
 }
 
 #caption {
@@ -15,7 +16,6 @@ body {
 #caption > div {
     display: table-cell;
     vertical-align: middle;
-    font-size: 125%;
     font-weight: 700;
     padding-left: 10px;
     margin-right: 5px;
@@ -47,9 +47,8 @@ div.pixel-group-divider {
     margin-bottom: 10px;
 }
 
-label, .pe-show {
+label {
     font-weight: 600;
-    font-size: 12px;
     margin-right: 5px;
 }
 
@@ -57,7 +56,6 @@ div.pixel-caption {
 }
 
 div.pixel-list {
-    font-size: 90%;
     margin: 10px 0;
 }
 
@@ -96,17 +94,19 @@ div.pixel-detail-toggle {
 
 div.pixel-detail-caption {
     color: gray;
-    font-weight: 500;
+    font-weight: 600;
     margin-bottom: 5px;
 }
 
 .pixel-entry {
     display: flex;
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 
 .pe-show {
-    font-color: gray;
-    text-decoration: underline dotted gray;
+    color: blue;
+    text-decoration: underline solid blue;
 }
 
 .pe-missing {
@@ -115,9 +115,20 @@ div.pixel-detail-caption {
 
 .pe-longtext {
     padding: 3px;
-    border: 1px solid lightgray;
+    border: 1px dotted lightgray;
     margin: 5px 10px 5px -15px;
+    font-size: 90%;
     overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.pe-divider {
+    margin-bottom: 10px;
+}
+
+div[class='pe-longtext'] + div {
+    margin-bottom: 15px;
 }
 
 .toggle-icon {
