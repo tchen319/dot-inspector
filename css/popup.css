@@ -16,16 +16,9 @@ body {
 }
 
 #caption > div {
-    display: table-cell;
-    vertical-align: middle;
     font-weight: 700;
     padding-left: 10px;
     margin-right: 5px;
-}
-
-#caption > img {
-    display: table-cell;
-    vertical-align: middle;
 }
 
 #content {
@@ -55,12 +48,15 @@ div.pixel-list {
     margin: 10px 0;
 }
 
+div.pixel-detail-toggle {
+    display: flex;
+}
+
 div.pixel-cell {
     flex-direction: row;
     padding-right: 5px;
     min-width: 15px;
     text-align: center;
-    vertical-align: middle;
 }
 
 div.pixel-cell:hover, div.pe-show {
@@ -76,16 +72,6 @@ div.pixel-detail {
     padding-top: 5px;
     padding-bottom: 5px;
     padding-left: 30px;
-}
-
-div.pixel-detail-toggle {
-    display: flex;
-}
-
-div.pixel-detail-caption {
-    color: gray;
-    font-weight: 600;
-    margin-bottom: 5px;
 }
 
 .pixel-entry {
@@ -111,10 +97,6 @@ div.pixel-detail-caption {
     overflow-wrap: break-word;
     word-wrap: break-word;
     word-break: break-all;
-}
-
-.pe-divider {
-    margin-bottom: 10px;
 }
 
 div[class='pe-longtext'] + div {
