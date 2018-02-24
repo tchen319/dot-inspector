@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    min-width: 360px;
+    min-width: 460px;
     width: 460px;
     white-space: nowrap;
     display: block;
@@ -10,7 +10,9 @@ body {
 
 #caption {
     margin: 10px;
-    display: table;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 #caption > div {
@@ -26,13 +28,12 @@ body {
     vertical-align: middle;
 }
 
-#content, #no-content {
-    display: none;
-    margin: 10px;
-    /* width: 100%; */
+#content {
+    margin: 15px 10px;
 }
 
 #no-content {
+    margin: 10px;
     padding: 10px 0;
 }
 
@@ -40,11 +41,6 @@ div.divider {
     margin-top: 10px;
     border-top: 1px solid #461aa0;
     width: 100%;
-}
-
-div.pixel-group-divider {
-    clear: both;
-    margin-bottom: 10px;
 }
 
 label {
@@ -59,12 +55,8 @@ div.pixel-list {
     margin: 10px 0;
 }
 
-div[data-template] {
-    display: none;
-}
-
 div.pixel-cell {
-    float: left;
+    flex-direction: row;
     padding-right: 5px;
     min-width: 15px;
     text-align: center;
@@ -76,20 +68,18 @@ div.pixel-cell:hover, div.pe-show {
 }
 
 div.pixel-cell:last-child {
-    clear: right;
     padding-left: 5px;
     padding-bottom: 5px;
 }
 
 div.pixel-detail {
-    clear: both;
     padding-top: 5px;
     padding-bottom: 5px;
     padding-left: 30px;
 }
 
 div.pixel-detail-toggle {
-    clear: both;
+    display: flex;
 }
 
 div.pixel-detail-caption {

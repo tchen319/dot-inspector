@@ -14,36 +14,35 @@
 <body>
 <div id="container">
     <div id="caption">
-        <img src="img/yahoo-logo28.png" style="float:left;"/>
+        <img src="img/yahoo-logo28.png"/>
         <div>Gemini DOT Inspector</div>
     </div>
     <div style="clear: both"></div>
     <div class="divider"></div>
-    <div id="content">
-        <!-- pixel-caption comes here -->
-        <!-- pixel-list comes here -->
-    </div>
-    <div id="no-content"></div>
-</div>
 
-<!-- the templates -->
-<div>
-    <div class="pixel-caption" data-template="label">
-        <label>Pixel ID:</label>
-        <span>12345</span>
-    </div>
-    <div class="pixel-list" data-template="pixel">
-        <div class="pixel-detail-toggle">
-            <div class="pixel-cell"><i class="fas fa-angle-double-right toggle-icon"></i></div>
-            <div class="pixel-cell"><i class="fas fa-exclamation-circle status-icon"></i></div>
-            <div class="pixel-cell">Page View</div>
+    <template id="pixel-content-template">
+        <div id="content">
+            <div class="pixel-caption">
+                <label>Pixel ID:</label>
+                <span>12345</span>
+            </div>
+            <div class="pixel-list">
+                <div class="pixel-detail-toggle">
+                    <div class="pixel-cell"><i class="fas fa-angle-double-right toggle-icon"></i></div>
+                    <div class="pixel-cell"><i class="fas fa-exclamation-circle status-icon"></i></div>
+                    <div class="pixel-cell">Page View</div>
+                </div>
+                <div class="pixel-detail">
+                    <!--
+                    <div class="pixel-detail-caption">EVENT INFO</div>
+                    -->
+                </div>
+            </div>
         </div>
-        <div class="pixel-detail">
-            <!--
-            <div class="pixel-detail-caption">EVENT INFO</div>
-            -->
+        <div id="no-content">
+            No pixels found on <u>baseUrl</u>
         </div>
-    </div>
+    </template>
 </div>
 
 <!-- Value of a pixel entry -->

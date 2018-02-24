@@ -13,10 +13,6 @@ const WARNING_MASK = PARAM_PRODUCT_ID | PARAM_EVENT_ACTION | PARAM_EVENT_TYPE;
 const PIXEL_KEYS = ['a', '.yp', 'et', 'ec', 'ea', 'el', 'ev', 'gv'];
 const PIXEL_INFO = ['project ID', 'pixel ID', 'event type', 'event category', 'event action', 'event label', 'event value', 'gemini value'];
 
-let pixelListTemplateDiv;
-let pixelLabelTemplateDiv;
-let contentDiv;
-
 /**
  */
 function loadPixels() {
@@ -27,8 +23,9 @@ function loadPixels() {
         chrome.runtime.sendMessage({action: 'pixels', tabId: tab.id}, function (pixelCollection) {
             if (pixelCollection) {
                 const pixelDetails = pixelCollection.pixels;
-                const noContentDiv = document.getElementById('no-content');
-                const contentDiv = document.getElementById('content');
+                const container = document.querySelector('#container');
+                const template = document.querySelector('#pixel-content-template').content;
+                container.hidden = true;
 
                 if (pixelDetails) {
                     const pixelGroup = new Set();
@@ -41,34 +38,34 @@ function loadPixels() {
                         /**
                          * Display a pixel ID
                          */
-                        const pixelLabel = pixelLabelTemplateDiv.cloneNode(false);
-                        const _pixel_id = (!pixelId ? 'Missing' : pixelId);
+                        let contentDiv = template.querySelector('#content');
+                        const pixelLabel = contentDiv.getElementsByClassName('pixel-caption')[0];
+                        const valueSpan = pixelLabel.getElementsByTagName('span')[0];
 
-                        pixelLabel.innerHTML = `<label>Pixel ID:</label><span>${_pixel_id}</span>`;
-                        pixelLabel.removeAttribute('data-template');
-                        contentDiv.appendChild(pixelLabel);
+                        valueSpan.textContent = (!pixelId ? 'Missing' : pixelId);
+                        contentDiv = document.importNode(contentDiv, true);
 
                         for (let i = 0; i < pixelDetails.length; i++) {
                             if (pixelDetails[i].pixel_id === pixelId) {
-                                createPixelDiv(pixelDetails[i]);
+                                createPixelDiv(contentDiv, pixelDetails[i]);
                             }
                         }
 
                         // separate from a previous pixel group
-                        const separatorDiv = document.createElement('div');
-                        separatorDiv.classList.add('pixel-group-divider');
-                        contentDiv.appendChild(separatorDiv);
+                        container.appendChild(contentDiv);
                     }
-
-                    noContentDiv.style.display = 'none';
-                    contentDiv.style.display = 'inherit';
-
                 } else {
                     const baseUrl = tab.url.replace(/(http[s]?:\/\/[^\/?]*).*$/, '$1');
+                    let noContentDiv = template.querySelector('#no-content');
+
                     noContentDiv.innerHTML = 'No pixels found on <u>' + baseUrl + '</u>';
-                    noContentDiv.style.display = 'inherit';
-                    contentDiv.style.display = 'none';
+                    noContentDiv = document.importNode(noContentDiv, true);
+                    container.appendChild(noContentDiv);
                 }
+
+                window.setTimeout(function() {
+                    container.hidden = false;
+                }, 10)
             }
         });
     });
@@ -78,15 +75,10 @@ function loadPixels() {
  * Create a new section showing both a pixel summary info and detail info.
  * @param pixel is a 'PixelDetail' object defined in background.js
  */
-function createPixelDiv(pixel) {
-    if (!pixelListTemplateDiv) {
-        console.log('missing a pixel template');
-        return;
-    }
-
-    const pixelList = pixelListTemplateDiv.cloneNode(true);
+function createPixelDiv(contentDiv, pixel) {
+    const pixelList = contentDiv.getElementsByClassName('pixel-list')[0];
     const toggleDiv = pixelList.getElementsByClassName('pixel-detail-toggle')[0];
-    const detailDiv = pixelList.lastElementChild;
+    const detailDiv = pixelList.getElementsByClassName('pixel-detail')[0];
 
     /**
      * Add a toggle icon and then a status icon
@@ -105,7 +97,7 @@ function createPixelDiv(pixel) {
      * Add an event action - default 'Page View' is assumed
      */
     const eventActionDiv = toggleDiv.lastElementChild;
-    const _event_action = !pixel.event_action ? 'Page View' : pixel.event_action;
+    const _event_action = !pixel.event_action ? 'Unknown Event Action' : pixel.event_action;
     eventActionDiv.innerHTML = `${_event_action}`;
 
     // Add a click event listener
@@ -144,7 +136,6 @@ function createPixelDiv(pixel) {
 
     // Insert it into DOM, and then make it visible by removing the invisible style
     contentDiv.appendChild(pixelList);
-    pixelList.removeAttribute('data-template');
 }
 
 /**
@@ -213,9 +204,5 @@ function createDetailEntryDiv(parentDiv, labels, value, isOptional = false, isSh
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    contentDiv = document.getElementById('content');
-    pixelLabelTemplateDiv = document.querySelector('div[data-template="label"]');
-    pixelListTemplateDiv = document.querySelector('div[data-template="pixel"]');
-
     loadPixels();
 });
