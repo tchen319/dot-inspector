@@ -119,7 +119,7 @@ function createPixelDiv(contentDiv, pixel) {
      * Add an event details
      */
     createDetailEntryDiv(detailDiv, [`URL (${pixel.type})`], urlBeautify(pixel.url), false, true);
-    createDetailEntryDiv(detailDiv, ['Load time'], pixel.load_time);
+    createDetailEntryDiv(detailDiv, ['Load time'], pixel.load_time + ' ms');
 
     for (let i = 0; i < PIXEL_KEYS.length; i++) {
         const key = PIXEL_KEYS[i];
@@ -182,7 +182,6 @@ function createDetailEntryDiv(parentDiv, labels, value, isOptional = false, isSh
 
     if (labels.length == 2) {
         valueDiv.textContent += ` (${labels[1]})`;
-        console.log('new label: ' + valueDiv.textContent);
     }
     if (value && isShowHide) {
         const longValueDiv = detailEntryDiv.querySelector(".pe-longtext");
