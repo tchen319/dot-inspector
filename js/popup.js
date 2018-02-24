@@ -25,7 +25,6 @@ function loadPixels() {
                 const pixelDetails = pixelCollection.pixels;
                 const container = document.querySelector('#container');
                 const template = document.querySelector('#pixel-content-template').content;
-                container.hidden = true;
 
                 if (pixelDetails) {
                     const pixelGroup = new Set();
@@ -62,10 +61,6 @@ function loadPixels() {
                     noContentDiv = document.importNode(noContentDiv, true);
                     container.appendChild(noContentDiv);
                 }
-
-                window.setTimeout(function() {
-                    container.hidden = false;
-                }, 10)
             }
         });
     });
@@ -205,4 +200,5 @@ function createDetailEntryDiv(parentDiv, labels, value, isOptional = false, isSh
 
 document.addEventListener('DOMContentLoaded', () => {
     loadPixels();
+    document.body.style.display = 'block';
 });
