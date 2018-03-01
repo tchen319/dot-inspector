@@ -34,24 +34,25 @@ function loadPixels() {
                     }
 
                     for (const pixelId of pixelGroup) {
-                        /**
-                         * Display a pixel ID
-                         */
-                        let contentDiv = template.querySelector('#content');
-                        const pixelLabel = contentDiv.getElementsByClassName('pixel-caption')[0];
-                        const valueSpan = pixelLabel.getElementsByTagName('span')[0];
-
-                        valueSpan.textContent = (!pixelId ? 'Missing' : pixelId);
-                        contentDiv = document.importNode(contentDiv, true);
-
                         for (let i = 0; i < pixelDetails.length; i++) {
-                            if (pixelDetails[i].pixel_id === pixelId) {
-                                createPixelDiv(contentDiv, pixelDetails[i]);
+                            if (pixelDetails[i].pixel_id !== pixelId) {
+                                continue;
                             }
-                        }
 
-                        // separate from a previous pixel group
-                        container.appendChild(contentDiv);
+                            /**
+                             * Display a pixel ID
+                             */
+                            let contentDiv = template.querySelector('#content');
+                            const pixelLabel = contentDiv.getElementsByClassName('pixel-caption')[0];
+                            const valueSpan = pixelLabel.getElementsByTagName('span')[0];
+
+                            valueSpan.textContent = (!pixelId ? 'Missing' : pixelId);
+                            contentDiv = document.importNode(contentDiv, true);
+                            createPixelDiv(contentDiv, pixelDetails[i]);
+
+                            // separate from a previous pixel group
+                            container.appendChild(contentDiv);
+                        }
                     }
                 } else {
                     const baseUrl = tab.url.replace(/(http[s]?:\/\/[^\/?]*).*$/, '$1');
@@ -200,4 +201,9 @@ function createDetailEntryDiv(parentDiv, labels, value, isOptional = false, isSh
 document.addEventListener('DOMContentLoaded', () => {
     loadPixels();
     document.body.style.display = 'block';
+    document.style.opacity = 0.99;
+    setTimeout(function () {
+            document.style.opacity = 1;
+        }, 10
+    )
 });
