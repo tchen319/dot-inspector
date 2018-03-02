@@ -121,6 +121,7 @@ function createPixelDiv(contentDiv, pixel) {
      */
     createDetailEntryDiv(detailDiv, [`URL (${pixel.type})`], urlBeautify(pixel.url), false, true);
     createDetailEntryDiv(detailDiv, ['Load time'], pixel.load_time + ' ms');
+    createDetailEntryDiv(detailDiv, ['product_id'], pixel.product_id);
 
     for (let i = 0; i < PIXEL_KEYS.length; i++) {
         const key = PIXEL_KEYS[i];
