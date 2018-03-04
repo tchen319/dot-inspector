@@ -42,7 +42,7 @@ function loadPixels() {
                             /**
                              * Display a pixel ID
                              */
-                            let contentDiv = template.querySelector('#content');
+                            let contentDiv = template.querySelector('.content');
                             const pixelLabel = contentDiv.getElementsByClassName('pixel-caption')[0];
                             const valueSpan = pixelLabel.getElementsByTagName('span')[0];
 
@@ -56,7 +56,7 @@ function loadPixels() {
                     }
                 } else {
                     const baseUrl = tab.url.replace(/(http[s]?:\/\/[^\/?]*).*$/, '$1');
-                    let noContentDiv = template.querySelector('#no-content');
+                    let noContentDiv = template.querySelector('no-content');
 
                     noContentDiv.innerHTML = 'No pixels found on <u>' + baseUrl + '</u>';
                     noContentDiv = document.importNode(noContentDiv, true);
@@ -202,9 +202,9 @@ function createDetailEntryDiv(parentDiv, labels, value, isOptional = false, isSh
 document.addEventListener('DOMContentLoaded', () => {
     loadPixels();
     document.body.style.display = 'block';
-    document.style.opacity = 0.99;
+    document.body.style.opacity = 0.99;
     setTimeout(function () {
-            document.style.opacity = 1;
+            document.body.style.opacity = 1;
         }, 10
     )
 });

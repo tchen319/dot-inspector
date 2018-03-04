@@ -21,11 +21,11 @@ body {
     margin-right: 5px;
 }
 
-#content {
+div.content {
     margin: 15px 10px;
 }
 
-#no-content {
+div.no-content {
     margin: 10px;
     padding: 5px;
 }
@@ -38,7 +38,16 @@ div.divider {
 
 label {
     font-weight: 600;
-    margin-right: 5px;
+    margin-right: 10px;
+}
+
+.pixel-detail label {
+    text-align: right;
+    min-width: 100px;
+}
+
+.pe-value {
+    font-weight: 100;
 }
 
 div.pixel-caption {
@@ -99,8 +108,14 @@ div.pixel-detail {
     word-break: break-all;
 }
 
-div[class='pe-longtext'] + div {
+.pixel-detail div.pixel-entry:nth-child(4) {
     margin-bottom: 15px;
+}
+
+.content ~ .content {
+    border-top: 1px dotted lightgray;
+    margin-top: -10px;
+    padding-top: 10px;
 }
 
 .toggle-icon {
