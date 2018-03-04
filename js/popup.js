@@ -8,7 +8,9 @@ const PARAM_PIXEL_ID = 0x2;
 const PARAM_PRODUCT_ID = 0x4;
 const PARAM_EVENT_ACTION = 0x8;
 const PARAM_EVENT_TYPE = 0x10;
-const ERROR_MASK = PARAM_PROJECT_ID | PARAM_PIXEL_ID;
+
+const HTTP_REQUEST_ERROR = 0x1000;
+const ERROR_MASK = PARAM_PROJECT_ID | PARAM_PIXEL_ID | HTTP_REQUEST_ERROR;
 const WARNING_MASK = PARAM_PRODUCT_ID | PARAM_EVENT_ACTION | PARAM_EVENT_TYPE;
 const PIXEL_KEYS = ['a', '.yp', 'et', 'ec', 'ea', 'el', 'ev', 'gv'];
 const PIXEL_INFO = ['project ID', 'pixel ID', 'event type', 'event category', 'event action', 'event label', 'event value', 'gemini value'];
@@ -119,8 +121,12 @@ function createPixelDiv(contentDiv, pixel) {
     /**
      * Add an event details
      */
+    let load_time = pixel.load_time;
+    if (!(pixel.event_mask & HTTP_REQUEST_ERROR)) {
+        load_time += ' ms';
+    }
     createDetailEntryDiv(detailDiv, [`URL (${pixel.type})`], urlBeautify(pixel.url), false, true);
-    createDetailEntryDiv(detailDiv, ['Load time'], pixel.load_time + ' ms');
+    createDetailEntryDiv(detailDiv, ['Load time'], load_time);
     createDetailEntryDiv(detailDiv, ['product_id'], pixel.product_id);
 
     for (let i = 0; i < PIXEL_KEYS.length; i++) {

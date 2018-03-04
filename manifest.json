@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Yahoo Gemini DOT Pixel Inspector",
   "description": "Help to diagnose Gemini DPA DOT Pixels",
-  "version": "0.0.7",
+  "version": "0.0.8",
 
   "browser_action": {
     "default_title": "Yahoo Gemini DOT Pixel Inspector",

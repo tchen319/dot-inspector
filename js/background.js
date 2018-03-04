@@ -8,7 +8,9 @@ const PARAM_PIXEL_ID = 0x2;
 const PARAM_PRODUCT_ID = 0x4;
 const PARAM_EVENT_ACTION = 0x8;
 const PARAM_EVENT_TYPE = 0x10;
-const ERROR_MASK = PARAM_PROJECT_ID | PARAM_PIXEL_ID;
+
+const HTTP_REQUEST_ERROR = 0x1000;
+const ERROR_MASK = PARAM_PROJECT_ID | PARAM_PIXEL_ID | HTTP_REQUEST_ERROR;
 const WARNING_MASK = PARAM_PRODUCT_ID | PARAM_EVENT_ACTION | PARAM_EVENT_TYPE;
 
 /**
@@ -272,6 +274,51 @@ chrome.webRequest.onCompleted.addListener(
                 if (p.id === details.requestId) {
                     p.load_time = Date.now() + p.load_time;
                     p.load_time = Number.parseFloat(p.load_time).toFixed(2);
+                    break;
+                }
+            }
+        }
+
+        return {cancel: false};
+    },
+    {
+        urls: ["*://sp.analytics.yahoo.com/*"],
+        types: ["script", "image"]
+    }
+);
+
+/**
+ * Listen for <script> and <img> loading. The scope of url is defined in manifect.json
+ */
+chrome.webRequest.onBeforeRedirect.addListener(
+    function (details) {
+        const memberPixels = tabPixelCollection[details.tabId];
+        if (memberPixels && memberPixels.pixels) {
+            for (const p of memberPixels.pixels) {
+                if (p.id === details.requestId) {
+                    p.load_time = Date.now() + p.load_time;
+                    p.load_time = Number.parseFloat(p.load_time).toFixed(2);
+                    break;
+                }
+            }
+        }
+
+        return {cancel: false};
+    },
+    {
+        urls: ["*://sp.analytics.yahoo.com/*"],
+        types: ["script", "image"]
+    }
+);
+
+chrome.webRequest.onErrorOccurred.addListener(
+    function (details) {
+        const memberPixels = tabPixelCollection[details.tabId];
+        if (memberPixels && memberPixels.pixels) {
+            for (const p of memberPixels.pixels) {
+                if (p.id === details.requestId) {
+                    p.load_time = (details.error ? p.load_time : 'Error');
+                    p.event_mask |= HTTP_REQUEST_ERROR;
                     break;
                 }
             }
