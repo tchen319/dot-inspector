@@ -10,10 +10,10 @@ const PARAM_EVENT_ACTION = 0x8;
 const PARAM_EVENT_TYPE = 0x10;
 
 const HTTP_REQUEST_ERROR = 0x1000;
-const ERROR_MASK = PARAM_PROJECT_ID | PARAM_PIXEL_ID | HTTP_REQUEST_ERROR;
-const WARNING_MASK = PARAM_PRODUCT_ID | PARAM_EVENT_ACTION | PARAM_EVENT_TYPE;
+const ERROR_MASK = PARAM_PROJECT_ID | PARAM_PIXEL_ID | PARAM_PRODUCT_ID | PARAM_EVENT_ACTION | HTTP_REQUEST_ERROR;
+const WARNING_MASK = 0;
 const PIXEL_KEYS = ['a', '.yp', 'et', 'ec', 'ea', 'el', 'ev', 'gv'];
-const PIXEL_INFO = ['project ID', 'pixel ID', 'event type', 'event category', 'event action', 'event label', 'event value', 'gemini value'];
+const PIXEL_INFO = ['project ID', 'pixel ID', '?event type', '?event category', 'event action', '?event label', '?event value', '?gemini value'];
 
 /**
  */
@@ -131,10 +131,17 @@ function createPixelDiv(contentDiv, pixel) {
 
     for (let i = 0; i < PIXEL_KEYS.length; i++) {
         const key = PIXEL_KEYS[i];
-        const info = PIXEL_INFO[i];
+        let info = PIXEL_INFO[i];
         let value = pixel.params[key];
+        let isOptional = false;
 
-        createDetailEntryDiv(detailDiv, [key, info], value);
+        if (info.startsWith('?')) {
+            info = info.substr(1);
+            isOptional = true;
+        }
+        if (value || !isOptional) {
+            createDetailEntryDiv(detailDiv, [key, info], value);
+        }
     }
 
     // Insert it into DOM, and then make it visible by removing the invisible style
